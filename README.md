@@ -1,6 +1,12 @@
 # WarBoy
 
-**TODO: Add description**
+<a href="https://www.youtube.com/watch?v=mhm-4kDBhio">
+  <img src="images/mad_max_fury_road_shiny_and_chrome.png">
+</a>
+
+*"~~Ride~~ Test eternal, shiny ~~&~~ w/ ~~chrome~~ Chrome." -- Immortan Joe, Elixir Developer*
+
+WarBoy is an Elixir wrapper for [ChromeDriver](https://chromedriver.chromium.org/).  This is a work in progress, so if you're looking for something more mature, maybe check out [Wallaby](https://github.com/elixir-wallaby/wallaby).
 
 ## Installation
 
