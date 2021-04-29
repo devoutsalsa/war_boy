@@ -1,7 +1,7 @@
 # WarBoy
 
 <a href="https://www.youtube.com/watch?v=mhm-4kDBhio">
-  <img src="images/mad_max_fury_road_shiny_and_chrome.png">
+  <img src="https://i.imgur.com/Apiyar7.png">
 </a>
 
 *"~~Ride~~ Test eternal, shiny ~~&~~ w/ ~~chrome~~ Chrome." -- Immortan Joe, Elixir Developer*
