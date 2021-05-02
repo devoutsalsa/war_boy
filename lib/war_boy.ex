@@ -4,11 +4,12 @@ defmodule WarBoy do
   """
 
   alias WarBoy.Session
+  alias WarBoy.Session.Timeouts
 
   def post_session!(attrs \\ __post_session_attrs__()) do
-    "/session"
-    |> post!(attrs)
-    |> Session.new()
+    with attrs <- post!("/session", attrs) do
+      Session.new(attrs)
+    end
   end
 
   def delete_session!(session) do
@@ -23,7 +24,14 @@ defmodule WarBoy do
 
   def get_timeouts!(session) do
     with timeouts <- get!("/session/" <> session.id <> "/timeouts") do
-      Session.update!(session, timeouts: timeouts)
+      Session.new_timeouts!(session, timeouts)
+    end
+  end
+
+  def post_timeouts!(session, timeout_attrs) do
+    with timeouts <- Timeouts.update!(session.timeouts, timeout_attrs),
+         nil <- post!("/session/" <> session.id <> "/timeouts", timeouts) do
+      Session.update_timeouts!(session, timeouts)
     end
   end
 

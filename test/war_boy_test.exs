@@ -74,11 +74,11 @@ defmodule WarBoyTest do
   describe "sessions" do
     setup(:session_setup_and_teardown)
 
-    test "post_session", %{session: session} do
+    test "POST /sessions", %{session: session} do
       assert match?(%Session{}, session)
     end
 
-    test "delete_session", %{session: session} do
+    test "DELETE /sessions/:id", %{session: session} do
       session = WarBoy.delete_session!(session)
       assert match?(%Session{}, session)
       assert session.deleted? == true
@@ -88,7 +88,7 @@ defmodule WarBoyTest do
   describe "status" do
     setup(:session_setup_and_teardown)
 
-    test "get_status" do
+    test "GET /status" do
       assert "ChromeDriver ready for new sessions." ==
                WarBoy.get_status!() |> Map.fetch!("message")
     end
@@ -97,10 +97,27 @@ defmodule WarBoyTest do
   describe "timeouts" do
     setup(:session_setup_and_teardown)
 
-    test "get_timeouts", %{session: session} do
+    test "GET /sessions/:id/timeouts", %{session: session} do
       session = WarBoy.get_timeouts!(session)
       assert match?(%Session{}, session)
-      assert match?(%{"implicit" => _, "pageLoad" => _, "script" => _}, session.timeouts)
+      assert match?(%{implicit: _, page_load: _, script: _}, session.timeouts)
+    end
+
+    test "POST /sessions/:id/timeouts", %{session: session} do
+      timeouts = session.timeouts
+
+      timeout_attrs = %{
+        implicit: timeouts.implicit + 1,
+        page_load: timeouts.page_load + 1,
+        script: timeouts.script + 1
+      }
+
+      session = WarBoy.post_timeouts!(session, timeout_attrs)
+      assert match?(%Session{}, session)
+      timeouts = WarBoy.get_timeouts!(session).timeouts
+      assert timeouts.implicit == timeout_attrs.implicit
+      assert timeouts.page_load == timeout_attrs.page_load
+      assert timeouts.script == timeout_attrs.script
     end
   end
 
