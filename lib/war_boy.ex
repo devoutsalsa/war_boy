@@ -79,6 +79,13 @@ defmodule WarBoy do
     end
   end
 
+  def delete_window!(session) do
+    case delete!("/session/" <> session.id <> "/window") do
+      [] ->
+        Session.delete!(session)
+    end
+  end
+
   @doc false
   def __chrome_driver_scheme__() do
     Application.get_env(:war_boy, :chrome_driver_scheme, __chrome_driver_scheme_default__())

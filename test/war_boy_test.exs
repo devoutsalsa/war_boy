@@ -206,6 +206,17 @@ defmodule WarBoyTest do
       assert match?(%Session{}, session)
       assert is_binary(session.window)
     end
+
+    @tag url: "http://localhost:21584/pages/1"
+    test "DELETE /session/:id/window (1 window)", %{session: session, url: url} do
+      session = WarBoy.post_url!(session, url)
+      session = WarBoy.get_window!(session)
+      session = WarBoy.delete_window!(session)
+      assert session.deleted? == true
+    end
+
+    @tag :skip
+    test "DELETE /session/:id/window (2 windows)"
   end
 
   defp session_setup_and_teardown(context) do
