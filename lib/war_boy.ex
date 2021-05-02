@@ -75,7 +75,7 @@ defmodule WarBoy do
 
   def get_window!(session) do
     with window <- get!("/session/" <> session.id <> "/window") do
-      Session.update_window!(session, window)
+      Session.create_or_update_window!(session, window)
     end
   end
 
@@ -83,6 +83,12 @@ defmodule WarBoy do
     case delete!("/session/" <> session.id <> "/window") do
       [] ->
         Session.delete!(session)
+    end
+  end
+
+  def post_new_window!(session) do
+    with _ <- post!("/session/" <> session.id <> "/window/new") do
+      session
     end
   end
 

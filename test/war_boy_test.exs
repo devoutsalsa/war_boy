@@ -204,7 +204,7 @@ defmodule WarBoyTest do
       session = WarBoy.post_url!(session, url)
       session = WarBoy.get_window!(session)
       assert match?(%Session{}, session)
-      assert is_binary(session.window)
+      assert is_binary(session.window.handle)
     end
 
     @tag url: "http://localhost:21584/pages/1"
@@ -217,6 +217,18 @@ defmodule WarBoyTest do
 
     @tag :skip
     test "DELETE /session/:id/window (2 windows)"
+
+    @tag :skip
+    test "POST /session/:id/window"
+
+    @tag :skip
+    test "GET /session/:id/window/handles"
+
+    test "POST /session/:id/window/new", %{session: session} do
+      # TODO check for one handle
+      session = WarBoy.post_new_window!(session) 
+      # TODO check for two handles
+    end
   end
 
   defp session_setup_and_teardown(context) do

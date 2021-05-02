@@ -1,6 +1,7 @@
 defmodule WarBoy.Session do
   alias WarBoy.Session
   alias WarBoy.Session.Timeouts
+  alias WarBoy.Session.Window
 
   defstruct id: nil,
             capabilities: nil,
@@ -37,8 +38,8 @@ defmodule WarBoy.Session do
     struct!(session, title: title)
   end
 
-  def update_window!(session, window) do
-    struct!(session, window: window)
+  def create_or_update_window!(session, window_attrs) do
+    struct!(session, window: Window.create_or_update!(session.window, window_attrs))
   end
 
   def delete!(session) do
