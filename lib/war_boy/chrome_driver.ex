@@ -52,13 +52,15 @@ defmodule WarBoy.ChromeDriver do
   defp get_chrome_driver_status!(port, countdown) do
     case HTTPoison.get(WarBoy.__chrome_driver_uri__() <> "/status") do
       {:ok, %HTTPoison.Response{body: body, status_code: 200}} ->
-        msg = 
+        msg =
           body
           |> Jason.decode!()
           |> Map.fetch!("value")
           |> Map.fetch!("message")
+
         send(self(), {port, {:data, msg}})
         :ok
+
       {:ok, error} ->
         Logger.error(inspect(error))
         :timer.sleep(1_000)

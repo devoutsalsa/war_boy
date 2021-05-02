@@ -3,8 +3,16 @@ defmodule WarBoy do
   Documentation for `WarBoy`.
   """
 
+  alias WarBoy.Session
+
+  def post_session!(attrs \\ __post_session_attrs__()) do
+    "/session"
+    |> post!(attrs)
+    |> Session.new()
+  end
+
   def get_status!() do
-    HTTPoison.get!(__chrome_driver_uri__() <> "/status")
+    get!("/status")
   end
 
   @doc false
@@ -41,5 +49,43 @@ defmodule WarBoy do
   def __chrome_driver_uri__() do
     Atom.to_string(__chrome_driver_scheme__()) <>
       "://" <> __chrome_driver_host__() <> ":" <> Integer.to_string(__chrome_driver_portno__())
+  end
+
+  @doc false
+  def __post_session_attrs__() do
+    %{
+      capabilities: %{
+        alwaysMatch: %{
+          browserName: "chrome",
+          "goog:chromeOptions": %{
+            args: ["--headless"]
+          }
+        }
+      }
+    }
+  end
+
+  def uri(path) do
+    __chrome_driver_uri__() <> path
+  end
+
+  defp get!(path) do
+    path
+    |> uri()
+    |> HTTPoison.get!()
+    |> handle_response!()
+  end
+
+  defp post!(path, body) do
+    path
+    |> uri()
+    |> HTTPoison.post!(Jason.encode!(body))
+    |> handle_response!()
+  end
+
+  defp handle_response!(%HTTPoison.Response{body: body, status_code: 200}) do
+    body
+    |> Jason.decode!()
+    |> Map.fetch!("value")
   end
 end
