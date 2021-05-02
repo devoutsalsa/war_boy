@@ -19,6 +19,12 @@ defmodule WarBoy do
     get!("/status")
   end
 
+  def get_timeouts!(session) do
+    with timeouts <- get!("/session/" <> session.id <> "/timeouts") do
+      Session.update!(session, timeouts: timeouts)
+    end
+  end
+
   @doc false
   def __chrome_driver_scheme__() do
     Application.get_env(:war_boy, :chrome_driver_scheme, __chrome_driver_scheme_default__())

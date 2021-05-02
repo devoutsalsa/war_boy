@@ -72,11 +72,7 @@ defmodule WarBoyTest do
   end
 
   describe "sessions" do
-    setup do
-      session = WarBoy.post_session!()
-      on_exit(fn -> WarBoy.delete_session!(session) end)
-      %{session: session}
-    end
+    setup(:session_setup_and_teardown)
 
     test "post_session", %{session: session} do
       assert match?(%Session{}, session)
@@ -88,9 +84,28 @@ defmodule WarBoyTest do
   end
 
   describe "status" do
-    test "status" do
+    setup(:session_setup_and_teardown)
+
+    test "get_status" do
       assert "ChromeDriver ready for new sessions." ==
                WarBoy.get_status!() |> Map.fetch!("message")
     end
+  end
+
+  describe "timeouts" do
+    setup(:session_setup_and_teardown)
+
+    test "get_timeouts", %{session: session} do
+      assert match?(
+               %{"implicit" => _, "pageLoad" => _, "script" => _},
+               WarBoy.get_timeouts!(session).timeouts
+             )
+    end
+  end
+
+  defp session_setup_and_teardown(context) do
+    session = WarBoy.post_session!()
+    on_exit(fn -> WarBoy.delete_session!(session) end)
+    Map.put(context, :session, session)
   end
 end
