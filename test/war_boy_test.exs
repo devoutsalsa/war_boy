@@ -74,11 +74,16 @@ defmodule WarBoyTest do
   describe "sessions" do
     setup do
       session = WarBoy.post_session!()
+      on_exit(fn -> WarBoy.delete_session!(session) end)
       %{session: session}
     end
 
     test "post_session", %{session: session} do
       assert match?(%Session{}, session)
+    end
+
+    test "delete_session", %{session: session} do
+      assert match?(nil, WarBoy.delete_session!(session))
     end
   end
 

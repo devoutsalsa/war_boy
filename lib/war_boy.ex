@@ -11,6 +11,10 @@ defmodule WarBoy do
     |> Session.new()
   end
 
+  def delete_session!(session) do
+    delete!("/session/" <> session.id)
+  end
+
   def get_status!() do
     get!("/status")
   end
@@ -67,6 +71,13 @@ defmodule WarBoy do
 
   def uri(path) do
     __chrome_driver_uri__() <> path
+  end
+
+  defp delete!(path) do
+    path
+    |> uri()
+    |> HTTPoison.delete!()
+    |> handle_response!()
   end
 
   defp get!(path) do
