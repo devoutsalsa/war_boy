@@ -35,6 +35,14 @@ defmodule WarBoy do
     end
   end
 
+  def post_url!(session, url) do
+    with chrome_driver_url <- "/session/" <> session.id <> "/url",
+         url_attrs <- %{url: url},
+         nil <- post!(chrome_driver_url, url_attrs) do
+      Session.update_url!(session, url)
+    end
+  end
+
   @doc false
   def __chrome_driver_scheme__() do
     Application.get_env(:war_boy, :chrome_driver_scheme, __chrome_driver_scheme_default__())

@@ -121,6 +121,17 @@ defmodule WarBoyTest do
     end
   end
 
+  describe "navigation" do
+    setup(:session_setup_and_teardown)
+
+    @tag url: "https://example.com"
+    test "POST /sessions/:id/url", %{session: session, url: url} do
+      session = WarBoy.post_url!(session, url)
+      assert match?(%Session{}, session)
+      assert session.url == url
+    end
+  end
+
   defp session_setup_and_teardown(context) do
     session = WarBoy.post_session!()
     on_exit(fn -> WarBoy.delete_session!(session) end)
