@@ -61,6 +61,12 @@ defmodule WarBoy do
     end
   end
 
+  def post_refresh!(session) do
+    with nil <- post!("/session/" <> session.id <> "/refresh") do
+      session
+    end
+  end
+
   @doc false
   def __chrome_driver_scheme__() do
     Application.get_env(:war_boy, :chrome_driver_scheme, __chrome_driver_scheme_default__())

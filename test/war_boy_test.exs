@@ -2,6 +2,7 @@ defmodule WarBoyTest do
   use ExUnit.Case, async: false
 
   alias WarBoy.Session
+  alias WarBoy.BasicWebsite.SiteCounter
 
   describe "configuration" do
     setup do
@@ -139,37 +140,50 @@ defmodule WarBoyTest do
       assert session.url == url
     end
 
-    @tag page_1: "http://localhost:21584/pages/1"
-    @tag page_2: "http://localhost:21584/pages/2"
-    test "POST /sessions/:id/back", %{session: session, page_1: page_1, page_2: page_2} do
-      session = WarBoy.post_url!(session, page_1)
+    @tag url_1: "http://localhost:21584/pages/1"
+    @tag url_2: "http://localhost:21584/pages/2"
+    test "POST /sessions/:id/back", %{session: session, url_1: url_1, url_2: url_2} do
+      session = WarBoy.post_url!(session, url_1)
       session = WarBoy.get_url!(session)
-      assert session.url == page_1
-      session = WarBoy.post_url!(session, page_2)
+      assert session.url == url_1
+      session = WarBoy.post_url!(session, url_2)
       session = WarBoy.get_url!(session)
-      assert session.url == page_2
+      assert session.url == url_2
       session = WarBoy.post_back!(session)
       assert match?(%Session{}, session)
       session = WarBoy.get_url!(session)
-      assert session.url == page_1
+      assert session.url == url_1
     end
 
-    @tag page_1: "http://localhost:21584/pages/1"
-    @tag page_2: "http://localhost:21584/pages/2"
-    test "POST /sessions/:id/forward", %{session: session, page_1: page_1, page_2: page_2} do
-      session = WarBoy.post_url!(session, page_1)
+    @tag url_1: "http://localhost:21584/pages/1"
+    @tag url_2: "http://localhost:21584/pages/2"
+    test "POST /sessions/:id/forward", %{session: session, url_1: url_1, url_2: url_2} do
+      session = WarBoy.post_url!(session, url_1)
       session = WarBoy.get_url!(session)
-      assert session.url == page_1
-      session = WarBoy.post_url!(session, page_2)
+      assert session.url == url_1
+      session = WarBoy.post_url!(session, url_2)
       session = WarBoy.get_url!(session)
-      assert session.url == page_2
+      assert session.url == url_2
       session = WarBoy.post_back!(session)
       session = WarBoy.get_url!(session)
-      assert session.url == page_1
+      assert session.url == url_1
       session = WarBoy.post_forward!(session)
       assert match?(%Session{}, session)
       session = WarBoy.get_url!(session)
-      assert session.url == page_2
+      assert session.url == url_2
+    end
+
+    @tag id: "95253c6a-a05a-40bc-99c2-7ef5c9240c23"
+    @tag url: "http://localhost:21584/counters/95253c6a-a05a-40bc-99c2-7ef5c9240c23"
+    test "POST /sessions/:id/refresh", %{session: session, id: id, url: url} do
+      assert SiteCounter.count(id) == 0
+      session = WarBoy.post_url!(session, url)
+      assert SiteCounter.count(id) == 1
+      session = WarBoy.post_refresh!(session)
+      assert match?(%Session{}, session)
+      assert SiteCounter.count(id) == 2
+      _session = WarBoy.post_refresh!(session)
+      assert SiteCounter.count(id) == 3
     end
   end
 
