@@ -79,7 +79,9 @@ defmodule WarBoyTest do
     end
 
     test "delete_session", %{session: session} do
-      assert match?(nil, WarBoy.delete_session!(session))
+      session = WarBoy.delete_session!(session)
+      assert match?(%Session{}, session)
+      assert session.deleted? == true
     end
   end
 
@@ -96,10 +98,9 @@ defmodule WarBoyTest do
     setup(:session_setup_and_teardown)
 
     test "get_timeouts", %{session: session} do
-      assert match?(
-               %{"implicit" => _, "pageLoad" => _, "script" => _},
-               WarBoy.get_timeouts!(session).timeouts
-             )
+      session = WarBoy.get_timeouts!(session)
+      assert match?(%Session{}, session)
+      assert match?(%{"implicit" => _, "pageLoad" => _, "script" => _}, session.timeouts)
     end
   end
 

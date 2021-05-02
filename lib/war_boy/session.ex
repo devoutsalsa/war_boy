@@ -3,16 +3,18 @@ defmodule WarBoy.Session do
 
   defstruct id: nil,
             capabilities: nil,
-            timeouts: nil
+            timeouts: nil,
+            deleted?: false
 
   def new(attrs) do
-    %Session{
-      id: attrs["sessionId"],
-      capabilities: attrs["capabilities"]
-    }
+    struct!(Session, id: attrs["sessionId"], capabilities: attrs["capabilities"])
   end
 
   def update!(session, attrs) do
     struct!(session, attrs)
+  end
+
+  def delete!(session) do
+    struct!(session, deleted?: true)
   end
 end

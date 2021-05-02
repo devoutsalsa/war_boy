@@ -12,7 +12,9 @@ defmodule WarBoy do
   end
 
   def delete_session!(session) do
-    delete!("/session/" <> session.id)
+    with nil <- delete!("/session/" <> session.id) do
+      Session.delete!(session)
+    end
   end
 
   def get_status!() do
