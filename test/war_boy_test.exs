@@ -75,11 +75,11 @@ defmodule WarBoyTest do
   describe "sessions" do
     setup(:session_setup_and_teardown)
 
-    test "POST /sessions", %{session: session} do
+    test "POST /session", %{session: session} do
       assert match?(%Session{}, session)
     end
 
-    test "DELETE /sessions/:id", %{session: session} do
+    test "DELETE /session/:id", %{session: session} do
       session = WarBoy.delete_session!(session)
       assert match?(%Session{}, session)
       assert session.deleted? == true
@@ -98,13 +98,13 @@ defmodule WarBoyTest do
   describe "timeouts" do
     setup(:session_setup_and_teardown)
 
-    test "GET /sessions/:id/timeouts", %{session: session} do
+    test "GET /session/:id/timeouts", %{session: session} do
       session = WarBoy.get_timeouts!(session)
       assert match?(%Session{}, session)
       assert match?(%{implicit: _, page_load: _, script: _}, session.timeouts)
     end
 
-    test "POST /sessions/:id/timeouts", %{session: session} do
+    test "POST /session/:id/timeouts", %{session: session} do
       timeouts = session.timeouts
 
       timeout_attrs = %{
@@ -126,14 +126,14 @@ defmodule WarBoyTest do
     setup(:session_setup_and_teardown)
 
     @tag url: "http://localhost:21584/pages/1"
-    test "POST /sessions/:id/url", %{session: session, url: url} do
+    test "POST /session/:id/url", %{session: session, url: url} do
       session = WarBoy.post_url!(session, url)
       assert match?(%Session{}, session)
       assert session.url == url
     end
 
     @tag url: "http://localhost:21584/pages/1"
-    test "GET /sessions/:id/url", %{session: session, url: url} do
+    test "GET /session/:id/url", %{session: session, url: url} do
       session = WarBoy.post_url!(session, url)
       session = WarBoy.get_url!(session)
       assert match?(%Session{}, session)
@@ -142,7 +142,7 @@ defmodule WarBoyTest do
 
     @tag url_1: "http://localhost:21584/pages/1"
     @tag url_2: "http://localhost:21584/pages/2"
-    test "POST /sessions/:id/back", %{session: session, url_1: url_1, url_2: url_2} do
+    test "POST /session/:id/back", %{session: session, url_1: url_1, url_2: url_2} do
       session = WarBoy.post_url!(session, url_1)
       session = WarBoy.get_url!(session)
       assert session.url == url_1
@@ -157,7 +157,7 @@ defmodule WarBoyTest do
 
     @tag url_1: "http://localhost:21584/pages/1"
     @tag url_2: "http://localhost:21584/pages/2"
-    test "POST /sessions/:id/forward", %{session: session, url_1: url_1, url_2: url_2} do
+    test "POST /session/:id/forward", %{session: session, url_1: url_1, url_2: url_2} do
       session = WarBoy.post_url!(session, url_1)
       session = WarBoy.get_url!(session)
       assert session.url == url_1
@@ -175,7 +175,7 @@ defmodule WarBoyTest do
 
     @tag id: "95253c6a-a05a-40bc-99c2-7ef5c9240c23"
     @tag url: "http://localhost:21584/counters/95253c6a-a05a-40bc-99c2-7ef5c9240c23"
-    test "POST /sessions/:id/refresh", %{session: session, id: id, url: url} do
+    test "POST /session/:id/refresh", %{session: session, id: id, url: url} do
       assert SiteCounter.count(id) == 0
       session = WarBoy.post_url!(session, url)
       assert SiteCounter.count(id) == 1
@@ -188,11 +188,23 @@ defmodule WarBoyTest do
 
     @tag url: "http://localhost:21584/pages/1"
     @tag title: "BasicWebsite: Page 1"
-    test "GET /sessions/:id/title", %{session: session, url: url, title: title} do
+    test "GET /session/:id/title", %{session: session, url: url, title: title} do
       session = WarBoy.post_url!(session, url)
       session = WarBoy.get_title!(session)
       assert match?(%Session{}, session)
       assert session.title == title
+    end
+  end
+
+  describe "contexts" do
+    setup(:session_setup_and_teardown)
+
+    @tag url: "http://localhost:21584/pages/1"
+    test "GET /session/:id/window", %{session: session, url: url} do
+      session = WarBoy.post_url!(session, url)
+      session = WarBoy.get_window!(session)
+      assert match?(%Session{}, session)
+      assert is_binary(session.window)
     end
   end
 

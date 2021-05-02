@@ -73,6 +73,12 @@ defmodule WarBoy do
     end
   end
 
+  def get_window!(session) do
+    with window <- get!("/session/" <> session.id <> "/window") do
+      Session.update_window!(session, window)
+    end
+  end
+
   @doc false
   def __chrome_driver_scheme__() do
     Application.get_env(:war_boy, :chrome_driver_scheme, __chrome_driver_scheme_default__())

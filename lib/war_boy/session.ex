@@ -7,7 +7,8 @@ defmodule WarBoy.Session do
             timeouts: nil,
             deleted?: false,
             url: nil,
-            title: nil
+            title: nil,
+            window: nil
 
   def new(attrs) do
     capabilities = Map.fetch!(attrs, "capabilities")
@@ -34,6 +35,10 @@ defmodule WarBoy.Session do
 
   def update_title!(session, title) do
     struct!(session, title: title)
+  end
+
+  def update_window!(session, window) do
+    struct!(session, window: window)
   end
 
   def delete!(session) do
