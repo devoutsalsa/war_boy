@@ -153,6 +153,24 @@ defmodule WarBoyTest do
       session = WarBoy.get_url!(session)
       assert session.url == page_1
     end
+
+    @tag page_1: "http://localhost:21584/pages/1"
+    @tag page_2: "http://localhost:21584/pages/2"
+    test "POST /sessions/:id/forward", %{session: session, page_1: page_1, page_2: page_2} do
+      session = WarBoy.post_url!(session, page_1)
+      session = WarBoy.get_url!(session)
+      assert session.url == page_1
+      session = WarBoy.post_url!(session, page_2)
+      session = WarBoy.get_url!(session)
+      assert session.url == page_2
+      session = WarBoy.post_back!(session)
+      session = WarBoy.get_url!(session)
+      assert session.url == page_1
+      session = WarBoy.post_forward!(session)
+      assert match?(%Session{}, session)
+      session = WarBoy.get_url!(session)
+      assert session.url == page_2
+    end
   end
 
   defp session_setup_and_teardown(context) do

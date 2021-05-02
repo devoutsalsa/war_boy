@@ -55,6 +55,12 @@ defmodule WarBoy do
     end
   end
 
+  def post_forward!(session) do
+    with nil <- post!("/session/" <> session.id <> "/forward") do
+      Session.update_url!(session, nil)
+    end
+  end
+
   @doc false
   def __chrome_driver_scheme__() do
     Application.get_env(:war_boy, :chrome_driver_scheme, __chrome_driver_scheme_default__())
