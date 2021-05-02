@@ -67,6 +67,12 @@ defmodule WarBoy do
     end
   end
 
+  def get_title!(session) do
+    with title <- get!("/session/" <> session.id <> "/title") do
+      Session.update_title!(session, title)
+    end
+  end
+
   @doc false
   def __chrome_driver_scheme__() do
     Application.get_env(:war_boy, :chrome_driver_scheme, __chrome_driver_scheme_default__())

@@ -8,15 +8,18 @@ defmodule WarBoy.BasicWebsite.AppServer do
 
   get "/counters/:id" do
     count = conn.params["id"] |> SiteCounter.increment() |> Integer.to_string()
-    send_resp(conn, 200, "Count " <> count)
+    template = template("Count " <> count)
+    send_resp(conn, 200, template)
   end
 
   get "/pages/1" do
-    send_resp(conn, 200, "Page 1")
+    template = template("Page 1")
+    send_resp(conn, 200, template)
   end
 
   get "/pages/2" do
-    send_resp(conn, 200, "Page 2")
+    template = template("Page 2")
+    send_resp(conn, 200, template)
   end
 
   @doc false
@@ -38,5 +41,23 @@ defmodule WarBoy.BasicWebsite.AppServer do
       restart: :permanent,
       shutdown: 500
     }
+  end
+
+  defp template(str) do
+    """
+    <!doctype html>
+    <html>
+      <head>
+        <title>
+          BasicWebsite: #{str}
+        </title>
+      </head>
+      <body>
+        <h1>
+          #{str}
+        </h1>
+      </body>
+    </html>
+    """
   end
 end

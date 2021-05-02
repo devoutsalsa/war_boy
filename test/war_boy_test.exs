@@ -185,6 +185,15 @@ defmodule WarBoyTest do
       _session = WarBoy.post_refresh!(session)
       assert SiteCounter.count(id) == 3
     end
+
+    @tag url: "http://localhost:21584/pages/1"
+    @tag title: "BasicWebsite: Page 1"
+    test "GET /sessions/:id/title", %{session: session, url: url, title: title} do
+      session = WarBoy.post_url!(session, url)
+      session = WarBoy.get_title!(session)
+      assert match?(%Session{}, session)
+      assert session.title == title
+    end
   end
 
   defp session_setup_and_teardown(context) do
