@@ -4,12 +4,15 @@ defmodule WarBoy.Application do
   @moduledoc false
 
   use Application
+  alias WarBoy.BasicWebsiteServer
   alias WarBoy.ChromeDriver
   require Logger
 
   @impl true
   def start(_type, _args) do
-    children = []
+    children = [
+      BasicWebsiteServer
+    ]
 
     children =
       if start_chrome_driver?() do

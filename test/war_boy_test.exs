@@ -124,11 +124,34 @@ defmodule WarBoyTest do
   describe "navigation" do
     setup(:session_setup_and_teardown)
 
-    @tag url: "https://example.com"
+    @tag url: "http://localhost:21584/pages/1"
     test "POST /sessions/:id/url", %{session: session, url: url} do
       session = WarBoy.post_url!(session, url)
       assert match?(%Session{}, session)
       assert session.url == url
+    end
+
+    @tag url: "http://localhost:21584/pages/1"
+    test "GET /sessions/:id/url", %{session: session, url: url} do
+      session = WarBoy.post_url!(session, url)
+      session = WarBoy.get_url!(session)
+      assert match?(%Session{}, session)
+      assert session.url == url
+    end
+
+    @tag page_1: "http://localhost:21584/pages/1"
+    @tag page_2: "http://localhost:21584/pages/2"
+    test "POST /sessions/:id/back", %{session: session, page_1: page_1, page_2: page_2} do
+      session = WarBoy.post_url!(session, page_1)
+      session = WarBoy.get_url!(session)
+      assert session.url == page_1
+      session = WarBoy.post_url!(session, page_2)
+      session = WarBoy.get_url!(session)
+      assert session.url == page_2
+      session = WarBoy.post_back!(session)
+      assert match?(%Session{}, session)
+      session = WarBoy.get_url!(session)
+      assert session.url == page_1
     end
   end
 

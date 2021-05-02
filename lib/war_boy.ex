@@ -43,6 +43,18 @@ defmodule WarBoy do
     end
   end
 
+  def get_url!(session) do
+    with url <- get!("/session/" <> session.id <> "/url") do
+      Session.update_url!(session, url)
+    end
+  end
+
+  def post_back!(session) do
+    with nil <- post!("/session/" <> session.id <> "/back") do
+      Session.update_url!(session, nil)
+    end
+  end
+
   @doc false
   def __chrome_driver_scheme__() do
     Application.get_env(:war_boy, :chrome_driver_scheme, __chrome_driver_scheme_default__())
@@ -111,7 +123,7 @@ defmodule WarBoy do
     |> handle_response!()
   end
 
-  defp post!(path, body) do
+  defp post!(path, body \\ %{}) do
     path
     |> uri()
     |> HTTPoison.post!(Jason.encode!(body))

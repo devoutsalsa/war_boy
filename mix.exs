@@ -22,8 +22,14 @@ defmodule WarBoy.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      # HTTP client
       {:httpoison, ">= 0.0.0"},
-      {:jason, ">= 0.0.0"}
+
+      # JSON decover
+      {:jason, ">= 0.0.0"},
+
+      # HTTP Server
+      {:plug_cowboy, ">= 0.0.0"}
     ]
   end
 end
