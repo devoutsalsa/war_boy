@@ -115,6 +115,18 @@ defmodule WarBoy do
     end
   end
 
+  def post_parent_frame!(session) do
+    with nil <- post!("/session/" <> session.id <> "/frame/parent") do
+      session
+    end
+  end
+
+  def get_window_rect!(session) do
+    with window_rect <- get!("/session/" <> session.id <> "/window/rect") do
+      Session.create_or_update_window_rect!(session, window_rect)
+    end
+  end
+
   def post_element!(session, using, value) do
     with attrs <- %{using: using, value: value},
          element <- post!("/session/" <> session.id <> "/element", attrs) do

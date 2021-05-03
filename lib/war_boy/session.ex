@@ -3,6 +3,7 @@ defmodule WarBoy.Session do
   alias WarBoy.Session.Element
   alias WarBoy.Session.Timeouts
   alias WarBoy.Session.Window
+  alias WarBoy.Session.WindowRect
 
   defstruct id: nil,
             capabilities: nil,
@@ -12,7 +13,8 @@ defmodule WarBoy.Session do
             title: nil,
             window: nil,
             window_handles: nil,
-            element: nil
+            element: nil,
+            window_rect: nil
 
   def new(attrs) do
     capabilities = Map.fetch!(attrs, "capabilities")
@@ -51,6 +53,12 @@ defmodule WarBoy.Session do
 
   def create_or_update_element!(session, element) do
     struct!(session, element: element)
+  end
+
+  def create_or_update_window_rect!(session, window_rect_attrs) do
+    struct!(session,
+      window_rect: WindowRect.create_or_update!(session.window_rect, window_rect_attrs)
+    )
   end
 
   def delete!(session) do

@@ -259,11 +259,25 @@ defmodule WarBoyTest do
       assert match?(%Session{}, session)
     end
 
-    @tag :skip
-    test "POST /session/:id/frame/parent"
+    @tag url: "http://localhost:21584/parents/1"
+    test "POST /session/:id/frame/parent", %{session: session, url: url} do
+      session = WarBoy.post_url!(session, url)
+      session = WarBoy.post_element!(session, "css selector", "#child")
+      session = WarBoy.post_frame!(session, session.element)
+      session = WarBoy.post_parent_frame!(session)
+      assert match?(%Session{}, session)
+    end
 
-    @tag :skip
-    test "GET /session/:id/window/rect"
+    @tag url: "http://localhost:21584/parents/1"
+    test "GET /session/:id/window/rect", %{session: session, url: url} do
+      session = WarBoy.post_url!(session, url)
+      session = WarBoy.get_window_rect!(session)
+      assert match?(%Session{}, session)
+      assert is_integer(session.window_rect.height)
+      assert is_integer(session.window_rect.width)
+      assert is_integer(session.window_rect.x)
+      assert is_integer(session.window_rect.y)
+    end
 
     @tag :skip
     test "POST /session/:id/window/rect"
