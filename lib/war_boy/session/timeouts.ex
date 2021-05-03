@@ -16,8 +16,10 @@ defmodule WarBoy.Session.Timeouts do
 end
 
 defimpl Jason.Encoder, for: WarBoy.Session.Timeouts do
+  alias Jason.Encode
+
   def encode(timeouts, opts \\ []) do
-    Jason.Encode.map(
+    Encode.map(
       %{
         "implicit" => timeouts.implicit,
         "pageLoad" => timeouts.page_load,

@@ -1,8 +1,8 @@
 defmodule WarBoyTest do
   use ExUnit.Case, async: false
 
-  alias WarBoy.Session
   alias WarBoy.BasicWebsite.SiteCounter
+  alias WarBoy.Session
 
   describe "configuration" do
     setup do
@@ -279,8 +279,22 @@ defmodule WarBoyTest do
       assert is_integer(session.window_rect.y)
     end
 
-    @tag :skip
-    test "POST /session/:id/window/rect"
+    @tag url: "http://localhost:21584/parents/1"
+    test "POST /session/:id/window/rect", %{session: session, url: url} do
+      session = WarBoy.post_url!(session, url)
+      session = WarBoy.get_window_rect!(session)
+      window_rect = session.window_rect
+
+      window_rect_attrs = %{
+        height: window_rect.height + 1,
+        width: window_rect.width + 1,
+        x: window_rect.x + 1,
+        y: window_rect.y + 1
+      }
+
+      session = WarBoy.post_window_rect!(session, window_rect_attrs)
+      assert match?(%Session{}, session)
+    end
 
     @tag :skip
     test "POST /session/:id/window/maximize"

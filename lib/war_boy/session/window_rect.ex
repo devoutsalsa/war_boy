@@ -8,10 +8,30 @@ defmodule WarBoy.Session.WindowRect do
 
   def create_or_update!(window_rect, window_rect_attrs) do
     %WindowRect{
-      height: window_rect_attrs["height"] || window_rect.height,
-      width: window_rect_attrs["width"] || window_rect.width,
-      x: window_rect_attrs["x"] || window_rect.x,
-      y: window_rect_attrs["y"] || window_rect.y
+      height:
+        Map.get(window_rect_attrs, "height") || Map.get(window_rect_attrs, :height) ||
+          window_rect.height,
+      width:
+        Map.get(window_rect_attrs, "width") || Map.get(window_rect_attrs, :width) ||
+          window_rect.width,
+      x: Map.get(window_rect_attrs, "x") || Map.get(window_rect_attrs, :x) || window_rect.x,
+      y: Map.get(window_rect_attrs, "y") || Map.get(window_rect_attrs, :y) || window_rect.y
     }
+  end
+end
+
+defimpl Jason.Encoder, for: WarBoy.Session.WindowRect do
+  alias Jason.Encode
+
+  def encode(window_rect, opts \\ []) do
+    Encode.map(
+      %{
+        height: window_rect.height,
+        width: window_rect.width,
+        x: window_rect.x,
+        y: window_rect.y
+      },
+      opts
+    )
   end
 end

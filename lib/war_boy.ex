@@ -5,6 +5,7 @@ defmodule WarBoy do
 
   alias WarBoy.Session
   alias WarBoy.Session.Timeouts
+  alias WarBoy.Session.WindowRect
 
   def post_session!(attrs \\ __post_session_attrs__()) do
     with attrs <- post!("/session", attrs) do
@@ -124,6 +125,13 @@ defmodule WarBoy do
   def get_window_rect!(session) do
     with window_rect <- get!("/session/" <> session.id <> "/window/rect") do
       Session.create_or_update_window_rect!(session, window_rect)
+    end
+  end
+
+  def post_window_rect!(session, attrs) do
+    with attrs <- WindowRect.create_or_update!(session.window_rect, attrs),
+         attrs <- post!("/session/" <> session.id <> "/window/rect", attrs) do
+      Session.create_or_update_window_rect!(session, attrs)
     end
   end
 
