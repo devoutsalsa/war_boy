@@ -83,6 +83,8 @@ defmodule WarBoy do
     case delete!("/session/" <> session.id <> "/window") do
       [] ->
         Session.delete!(session)
+      window_handles -> 
+        Session.create_or_update_window_handles!(session, window_handles)  
     end
   end
 

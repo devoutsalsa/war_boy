@@ -215,8 +215,14 @@ defmodule WarBoyTest do
       assert session.deleted? == true
     end
 
-    @tag :skip
-    test "DELETE /session/:id/window (2 windows)"
+    test "DELETE /session/:id/window (2 windows)", %{session: session} do
+      session = WarBoy.post_new_window!(session)
+      session = WarBoy.get_window_handles!(session)
+      assert length(session.window_handles) == 2
+      session = WarBoy.delete_window!(session)
+      session = WarBoy.get_window_handles!(session)
+      assert length(session.window_handles) == 1
+    end
 
     @tag :skip
     test "POST /session/:id/window"
