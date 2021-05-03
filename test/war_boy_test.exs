@@ -251,11 +251,11 @@ defmodule WarBoyTest do
       assert length(session.window_handles) == 2
     end
 
-    @tag :skip
     @tag url: "http://localhost:21584/parents/1"
     test "POST /session/:id/frame", %{session: session, url: url} do
       session = WarBoy.post_url!(session, url)
-      session = WarBoy.post_frame!(session, "child")
+      session = WarBoy.post_element!(session, "css selector", "#child")
+      session = WarBoy.post_frame!(session, session.element)
       assert match?(%Session{}, session)
     end
 
@@ -285,8 +285,7 @@ defmodule WarBoyTest do
       session = WarBoy.post_url!(session, parent_url)
       session = WarBoy.post_element!(session, "css selector", "#child")
       assert match?(%Session{}, session)
-      assert is_binary(session.element.key)
-      assert is_binary(session.element.value)
+      assert is_map(session.element)
     end
   end
 

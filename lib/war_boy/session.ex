@@ -49,8 +49,8 @@ defmodule WarBoy.Session do
     struct!(session, window_handles: window_handles)
   end
 
-  def create_or_update_element!(session, element_attrs) do
-    struct!(session, element: Element.create_or_update!(session.element, element_attrs))
+  def create_or_update_element!(session, element) do
+    struct!(session, element: element)
   end
 
   def delete!(session) do
