@@ -83,8 +83,16 @@ defmodule WarBoy do
     case delete!("/session/" <> session.id <> "/window") do
       [] ->
         Session.delete!(session)
-      window_handles -> 
-        Session.create_or_update_window_handles!(session, window_handles)  
+
+      window_handles ->
+        Session.create_or_update_window_handles!(session, window_handles)
+    end
+  end
+
+  def post_window!(session, handle) do
+    with attrs <- %{handle: handle},
+         nil <- post!("/session/" <> session.id <> "/window", attrs) do
+      session
     end
   end
 

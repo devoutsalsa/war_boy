@@ -224,8 +224,19 @@ defmodule WarBoyTest do
       assert length(session.window_handles) == 1
     end
 
-    @tag :skip
-    test "POST /session/:id/window"
+    test "POST /session/:id/window", %{session: session} do
+      session = WarBoy.get_window_handles!(session)
+      [window_handle] = session.window_handles
+      session = WarBoy.post_new_window!(session)
+      session = WarBoy.get_window_handles!(session)
+      window_handles = session.window_handles
+      [new_window_handle] = window_handles -- [window_handle]
+      session = WarBoy.get_window!(session)
+      assert session.window.handle == window_handle
+      session = WarBoy.post_window!(session, new_window_handle)
+      session = WarBoy.get_window!(session)
+      assert session.window.handle == new_window_handle
+    end
 
     test "GET /session/:id/window/handles", %{session: session} do
       session = WarBoy.get_window_handles!(session)
