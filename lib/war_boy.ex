@@ -86,6 +86,12 @@ defmodule WarBoy do
     end
   end
 
+  def get_window_handles!(session) do
+    with window_handles <- get!("/session/" <> session.id <> "/window/handles") do
+      Session.create_or_update_window_handles!(session, window_handles)
+    end
+  end
+
   def post_new_window!(session) do
     with _ <- post!("/session/" <> session.id <> "/window/new") do
       session

@@ -9,7 +9,8 @@ defmodule WarBoy.Session do
             deleted?: false,
             url: nil,
             title: nil,
-            window: nil
+            window: nil,
+            window_handles: nil
 
   def new(attrs) do
     capabilities = Map.fetch!(attrs, "capabilities")
@@ -40,6 +41,10 @@ defmodule WarBoy.Session do
 
   def create_or_update_window!(session, window_attrs) do
     struct!(session, window: Window.create_or_update!(session.window, window_attrs))
+  end
+
+  def create_or_update_window_handles!(session, window_handles) do
+    struct!(session, window_handles: window_handles)
   end
 
   def delete!(session) do

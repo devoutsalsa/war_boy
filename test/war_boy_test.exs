@@ -221,13 +221,17 @@ defmodule WarBoyTest do
     @tag :skip
     test "POST /session/:id/window"
 
-    @tag :skip
-    test "GET /session/:id/window/handles"
+    test "GET /session/:id/window/handles", %{session: session} do
+      session = WarBoy.get_window_handles!(session)
+      assert length(session.window_handles) == 1
+    end
 
     test "POST /session/:id/window/new", %{session: session} do
-      # TODO check for one handle
-      session = WarBoy.post_new_window!(session) 
-      # TODO check for two handles
+      session = WarBoy.get_window_handles!(session)
+      assert length(session.window_handles) == 1
+      session = WarBoy.post_new_window!(session)
+      session = WarBoy.get_window_handles!(session)
+      assert length(session.window_handles) == 2
     end
   end
 
