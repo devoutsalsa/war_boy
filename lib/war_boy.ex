@@ -108,6 +108,20 @@ defmodule WarBoy do
     end
   end
 
+  def post_frame!(session, id) do
+    with attrs <- %{id: id},
+         nil <- post!("/session/" <> session.id <> "/frame", attrs) do
+      session
+    end
+  end
+
+  def post_element!(session, using, value) do
+    with attrs <- %{using: using, value: value},
+         element <- post!("/session/" <> session.id <> "/element", attrs) do
+      Session.create_or_update_element!(session, element)
+    end
+  end
+
   @doc false
   def __chrome_driver_scheme__() do
     Application.get_env(:war_boy, :chrome_driver_scheme, __chrome_driver_scheme_default__())

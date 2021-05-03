@@ -1,5 +1,6 @@
 defmodule WarBoy.Session do
   alias WarBoy.Session
+  alias WarBoy.Session.Element
   alias WarBoy.Session.Timeouts
   alias WarBoy.Session.Window
 
@@ -10,7 +11,8 @@ defmodule WarBoy.Session do
             url: nil,
             title: nil,
             window: nil,
-            window_handles: nil
+            window_handles: nil,
+            element: nil
 
   def new(attrs) do
     capabilities = Map.fetch!(attrs, "capabilities")
@@ -45,6 +47,10 @@ defmodule WarBoy.Session do
 
   def create_or_update_window_handles!(session, window_handles) do
     struct!(session, window_handles: window_handles)
+  end
+
+  def create_or_update_element!(session, element_attrs) do
+    struct!(session, element: Element.create_or_update!(session.element, element_attrs))
   end
 
   def delete!(session) do

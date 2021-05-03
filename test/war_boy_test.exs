@@ -250,6 +250,44 @@ defmodule WarBoyTest do
       session = WarBoy.get_window_handles!(session)
       assert length(session.window_handles) == 2
     end
+
+    @tag :skip
+    @tag url: "http://localhost:21584/parents/1"
+    test "POST /session/:id/frame", %{session: session, url: url} do
+      session = WarBoy.post_url!(session, url)
+      session = WarBoy.post_frame!(session, "child")
+      assert match?(%Session{}, session)
+    end
+
+    @tag :skip
+    test "POST /session/:id/frame/parent"
+
+    @tag :skip
+    test "GET /session/:id/window/rect"
+
+    @tag :skip
+    test "POST /session/:id/window/rect"
+
+    @tag :skip
+    test "POST /session/:id/window/maximize"
+
+    @tag :skip
+    test "POST /session/:id/window/minimize"
+
+    @tag :skip
+    test "POST /session/:id/window/fullscreen"
+
+    @tag :skip
+    test "GET /session/:id/element/active"
+
+    @tag parent_url: "http://localhost:21584/parents/1"
+    test "POST /session/:id/element", %{session: session, parent_url: parent_url} do
+      session = WarBoy.post_url!(session, parent_url)
+      session = WarBoy.post_element!(session, "css selector", "#child")
+      assert match?(%Session{}, session)
+      assert is_binary(session.element.key)
+      assert is_binary(session.element.value)
+    end
   end
 
   defp session_setup_and_teardown(context) do

@@ -8,17 +8,27 @@ defmodule WarBoy.BasicWebsite.AppServer do
 
   get "/counters/:id" do
     count = conn.params["id"] |> SiteCounter.increment() |> Integer.to_string()
-    template = template("Count " <> count)
+    template = basic_template("Count " <> count)
     send_resp(conn, 200, template)
   end
 
   get "/pages/1" do
-    template = template("Page 1")
+    template = basic_template("Page 1")
     send_resp(conn, 200, template)
   end
 
   get "/pages/2" do
-    template = template("Page 2")
+    template = basic_template("Page 2")
+    send_resp(conn, 200, template)
+  end
+
+  get "/parents/1" do
+    template = parent_template("Parent 1", "/children/1")
+    send_resp(conn, 200, template)
+  end
+
+  get "/children/1" do
+    template = basic_template("Child 1")
     send_resp(conn, 200, template)
   end
 
@@ -43,7 +53,7 @@ defmodule WarBoy.BasicWebsite.AppServer do
     }
   end
 
-  defp template(str) do
+  defp basic_template(str) do
     """
     <!doctype html>
     <html>
@@ -56,6 +66,27 @@ defmodule WarBoy.BasicWebsite.AppServer do
         <h1>
           #{str}
         </h1>
+      </body>
+    </html>
+    """
+  end
+
+  defp parent_template(str, child_url) do
+    """
+    <!doctype html>
+    <html>
+      <head>
+        <title>
+          BasicWebsite: #{str}
+        </title>
+      </head>
+      <body>
+        <h1>
+          #{str}
+        </h1>
+        <div>
+          <iframe id="child" src="#{child_url}">
+        </div>
       </body>
     </html>
     """
