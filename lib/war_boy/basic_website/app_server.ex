@@ -3,6 +3,8 @@ defmodule WarBoy.BasicWebsite.AppServer do
   alias WarBoy.BasicWebsite.AppServer
   alias WarBoy.BasicWebsite.SiteCounter
 
+  @favicon "test/support/images/favicon.ico" |> Path.absname() |> File.read!()
+
   plug(:match)
   plug(:dispatch)
 
@@ -10,6 +12,10 @@ defmodule WarBoy.BasicWebsite.AppServer do
     count = conn.params["id"] |> SiteCounter.increment() |> Integer.to_string()
     template = basic_template("Count " <> count)
     send_resp(conn, 200, template)
+  end
+
+  get "/favicon.ico" do
+    send_resp(conn, 200, @favicon)
   end
 
   get "/pages/1" do

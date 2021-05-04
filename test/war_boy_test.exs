@@ -296,8 +296,21 @@ defmodule WarBoyTest do
       assert match?(%Session{}, session)
     end
 
-    @tag :skip
-    test "POST /session/:id/window/maximize"
+    @tag url: "http://localhost:21584/parents/1"
+    test "POST /session/:id/window/maximize", %{session: session, url: url} do
+      session = WarBoy.post_url!(session, url)
+
+      window_rect_attrs = %{
+        height: 1,
+        width: 1,
+        x: 1,
+        y: 1
+      }
+
+      session = WarBoy.post_window_rect!(session, window_rect_attrs)
+      session = WarBoy.post_window_maximize!(session)
+      assert match?(%Session{}, session)
+    end
 
     @tag :skip
     test "POST /session/:id/window/minimize"

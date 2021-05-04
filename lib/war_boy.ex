@@ -123,15 +123,21 @@ defmodule WarBoy do
   end
 
   def get_window_rect!(session) do
-    with window_rect <- get!("/session/" <> session.id <> "/window/rect") do
-      Session.create_or_update_window_rect!(session, window_rect)
+    with window_rect_attrs <- get!("/session/" <> session.id <> "/window/rect") do
+      Session.create_or_update_window_rect!(session, window_rect_attrs)
     end
   end
 
   def post_window_rect!(session, attrs) do
-    with attrs <- WindowRect.create_or_update!(session.window_rect, attrs),
-         attrs <- post!("/session/" <> session.id <> "/window/rect", attrs) do
-      Session.create_or_update_window_rect!(session, attrs)
+    with window_rect_attrs <- WindowRect.create_or_update!(session.window_rect, attrs),
+         window_rect_attrs <- post!("/session/" <> session.id <> "/window/rect", attrs) do
+      Session.create_or_update_window_rect!(session, window_rect_attrs)
+    end
+  end
+
+  def post_window_maximize!(session) do
+    with window_rect_attrs <- post!("/session/" <> session.id <> "/window/maximize") do
+      Session.create_or_update_window_rect!(session, window_rect_attrs)
     end
   end
 
@@ -185,7 +191,10 @@ defmodule WarBoy do
         alwaysMatch: %{
           browserName: "chrome",
           "goog:chromeOptions": %{
-            args: ["--headless"]
+            args: [
+              "--headless",
+              "--start-maximized"
+            ]
           }
         }
       }
