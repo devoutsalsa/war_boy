@@ -166,7 +166,7 @@ defmodule WarBoy do
     end
   end
 
-  def post_new_window!(session) do
+  def post_window_new!(session) do
     path = "/session/" <> session.id <> "/window/new"
 
     path
@@ -189,7 +189,7 @@ defmodule WarBoy do
     end
   end
 
-  def post_parent_frame!(session) do
+  def post_frame_parent!(session) do
     path = "/session/" <> session.id <> "/frame/parent"
 
     path

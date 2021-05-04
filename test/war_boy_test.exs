@@ -216,7 +216,7 @@ defmodule WarBoyTest do
     end
 
     test "DELETE /session/:id/window (2 windows)", %{session: session} do
-      session = WarBoy.post_new_window!(session)
+      session = WarBoy.post_window_new!(session)
       session = WarBoy.get_window_handles!(session)
       assert length(session.window_handles) == 2
       session = WarBoy.delete_window!(session)
@@ -227,7 +227,7 @@ defmodule WarBoyTest do
     test "POST /session/:id/window", %{session: session} do
       session = WarBoy.get_window_handles!(session)
       [window_handle] = session.window_handles
-      session = WarBoy.post_new_window!(session)
+      session = WarBoy.post_window_new!(session)
       session = WarBoy.get_window_handles!(session)
       window_handles = session.window_handles
       [new_window_handle] = window_handles -- [window_handle]
@@ -246,7 +246,7 @@ defmodule WarBoyTest do
     test "POST /session/:id/window/new", %{session: session} do
       session = WarBoy.get_window_handles!(session)
       assert length(session.window_handles) == 1
-      session = WarBoy.post_new_window!(session)
+      session = WarBoy.post_window_new!(session)
       session = WarBoy.get_window_handles!(session)
       assert length(session.window_handles) == 2
     end
@@ -264,7 +264,7 @@ defmodule WarBoyTest do
       session = WarBoy.post_url!(session, url)
       session = WarBoy.post_element!(session, "css selector", "#child")
       session = WarBoy.post_frame!(session, session.element)
-      session = WarBoy.post_parent_frame!(session)
+      session = WarBoy.post_frame_parent!(session)
       assert match?(%Session{}, session)
     end
 
