@@ -320,8 +320,12 @@ defmodule WarBoyTest do
       assert match?(%Session{}, session)
     end
 
-    @tag :skip
-    test "POST /session/:id/window/fullscreen"
+    @tag url: "http://localhost:21584/parents/1"
+    test "POST /session/:id/window/fullscreen", %{session: session, url: url} do
+      session = WarBoy.post_url!(session, url)
+      session = WarBoy.post_window_fullscreen!(session)
+      assert match?(%Session{}, session)
+    end
 
     @tag :skip
     test "GET /session/:id/element/active"

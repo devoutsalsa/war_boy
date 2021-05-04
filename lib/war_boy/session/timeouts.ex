@@ -2,16 +2,16 @@ defmodule WarBoy.Session.Timeouts do
   alias WarBoy.Session.Timeouts
   defstruct implicit: nil, page_load: nil, script: nil
 
-  def new!(attrs) do
-    %Timeouts{
-      implicit: Map.fetch!(attrs, "implicit"),
-      page_load: Map.fetch!(attrs, "pageLoad"),
-      script: Map.fetch!(attrs, "script")
-    }
+  def create_or_update(nil, attrs) do
+    create_or_update(%Timeouts{}, attrs)
   end
 
-  def update!(timeouts, timeout_attrs) do
-    struct!(timeouts, timeout_attrs)
+  def create_or_update(timeouts, attrs) do
+    %Timeouts{
+      implicit: Map.get(attrs, "implicit") || Map.get(attrs, :implicit) || timeouts.implicit,
+      page_load: Map.get(attrs, "pageLoad") || Map.get(attrs, :page_load) || timeouts.page_load,
+      script: Map.get(attrs, "script") || Map.get(attrs, :script) || timeouts.script
+    }
   end
 end
 

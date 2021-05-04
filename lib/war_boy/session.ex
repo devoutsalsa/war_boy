@@ -1,6 +1,5 @@
 defmodule WarBoy.Session do
   alias WarBoy.Session
-  alias WarBoy.Session.Element
   alias WarBoy.Session.Timeouts
   alias WarBoy.Session.Window
   alias WarBoy.Session.WindowRect
@@ -16,9 +15,9 @@ defmodule WarBoy.Session do
             element: nil,
             window_rect: nil
 
-  def new(attrs) do
+  def new!(attrs) do
     capabilities = Map.fetch!(attrs, "capabilities")
-    timeouts = Timeouts.new!(Map.fetch!(capabilities, "timeouts"))
+    timeouts = Timeouts.create_or_update(nil, Map.fetch!(capabilities, "timeouts"))
 
     %Session{
       id: Map.fetch!(attrs, "sessionId"),
@@ -28,7 +27,7 @@ defmodule WarBoy.Session do
   end
 
   def new_timeouts!(session, timeouts) do
-    struct!(session, timeouts: Timeouts.new!(timeouts))
+    struct!(session, timeouts: Timeouts.create_or_update(nil, timeouts))
   end
 
   def update_timeouts!(session, timeouts) do
@@ -44,7 +43,7 @@ defmodule WarBoy.Session do
   end
 
   def create_or_update_window!(session, window_attrs) do
-    struct!(session, window: Window.create_or_update!(session.window, window_attrs))
+    struct!(session, window: Window.create_or_update(session.window, window_attrs))
   end
 
   def create_or_update_window_handles!(session, window_handles) do
@@ -57,7 +56,7 @@ defmodule WarBoy.Session do
 
   def create_or_update_window_rect!(session, window_rect_attrs) do
     struct!(session,
-      window_rect: WindowRect.create_or_update!(session.window_rect, window_rect_attrs)
+      window_rect: WindowRect.create_or_update(session.window_rect, window_rect_attrs)
     )
   end
 

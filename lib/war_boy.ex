@@ -8,14 +8,19 @@ defmodule WarBoy do
   alias WarBoy.Session.WindowRect
 
   def post_session!(attrs \\ __post_session_attrs__()) do
-    with attrs <- post!("/session", attrs) do
-      Session.new(attrs)
-    end
+    "/session"
+    |> post!(attrs)
+    |> Session.new!()
   end
 
   def delete_session!(session) do
-    with nil <- delete!("/session/" <> session.id) do
-      Session.delete!(session)
+    path = "/session/" <> session.id
+
+    path
+    |> delete!()
+    |> case do
+      nil ->
+        Session.delete!(session)
     end
   end
 
@@ -24,64 +29,112 @@ defmodule WarBoy do
   end
 
   def get_timeouts!(session) do
-    with timeouts <- get!("/session/" <> session.id <> "/timeouts") do
-      Session.new_timeouts!(session, timeouts)
+    path = "/session/" <> session.id <> "/timeouts"
+
+    path
+    |> get!()
+    |> case do
+      timeouts ->
+        Session.new_timeouts!(session, timeouts)
     end
   end
 
   def post_timeouts!(session, timeout_attrs) do
-    with timeouts <- Timeouts.update!(session.timeouts, timeout_attrs),
-         nil <- post!("/session/" <> session.id <> "/timeouts", timeouts) do
-      Session.update_timeouts!(session, timeouts)
+    path = "/session/" <> session.id <> "/timeouts"
+    timeouts = Timeouts.create_or_update(session.timeouts, timeout_attrs)
+
+    path
+    |> post!(timeouts)
+    |> case do
+      nil ->
+        Session.update_timeouts!(session, timeouts)
     end
   end
 
   def post_url!(session, url) do
-    with chrome_driver_url <- "/session/" <> session.id <> "/url",
-         url_attrs <- %{url: url},
-         nil <- post!(chrome_driver_url, url_attrs) do
-      Session.update_url!(session, url)
+    path = "/session/" <> session.id <> "/url"
+    attrs = %{url: url}
+
+    path
+    |> post!(attrs)
+    |> case do
+      nil ->
+        Session.update_url!(session, url)
     end
   end
 
   def get_url!(session) do
-    with url <- get!("/session/" <> session.id <> "/url") do
-      Session.update_url!(session, url)
+    path = "/session/" <> session.id <> "/url"
+
+    path
+    |> get!()
+    |> case do
+      url ->
+        Session.update_url!(session, url)
     end
   end
 
   def post_back!(session) do
-    with nil <- post!("/session/" <> session.id <> "/back") do
-      Session.update_url!(session, nil)
+    path = "/session/" <> session.id <> "/back"
+
+    path
+    |> post!()
+    |> case do
+      nil ->
+        Session.update_url!(session, nil)
     end
   end
 
   def post_forward!(session) do
-    with nil <- post!("/session/" <> session.id <> "/forward") do
-      Session.update_url!(session, nil)
+    path = "/session/" <> session.id <> "/forward"
+
+    path
+    |> post!()
+    |> case do
+      nil ->
+        Session.update_url!(session, nil)
     end
   end
 
   def post_refresh!(session) do
-    with nil <- post!("/session/" <> session.id <> "/refresh") do
-      session
+    path = "/session/" <> session.id <> "/refresh"
+
+    path
+    |> post!()
+    |> case do
+      nil ->
+        session
     end
   end
 
   def get_title!(session) do
-    with title <- get!("/session/" <> session.id <> "/title") do
-      Session.update_title!(session, title)
+    path = "/session/" <> session.id <> "/title"
+
+    path
+    |> get!()
+    |> case do
+      title ->
+        Session.update_title!(session, title)
     end
   end
 
   def get_window!(session) do
-    with window <- get!("/session/" <> session.id <> "/window") do
-      Session.create_or_update_window!(session, window)
+    path = "/session/" <> session.id <> "/window"
+
+    path
+    |> get!()
+    |> case do
+      window ->
+        Session.create_or_update_window!(session, window)
     end
   end
 
   def delete_window!(session) do
-    case delete!("/session/" <> session.id <> "/window") do
+    path = "/session/" <> session.id <> "/window"
+
+    path
+    |> delete!()
+    |> case do
       [] ->
         Session.delete!(session)
 
@@ -91,66 +144,127 @@ defmodule WarBoy do
   end
 
   def post_window!(session, handle) do
-    with attrs <- %{handle: handle},
-         nil <- post!("/session/" <> session.id <> "/window", attrs) do
-      session
+    path = "/session/" <> session.id <> "/window"
+    attrs = %{handle: handle}
+
+    path
+    |> post!(attrs)
+    |> case do
+      nil ->
+        session
     end
   end
 
   def get_window_handles!(session) do
-    with window_handles <- get!("/session/" <> session.id <> "/window/handles") do
-      Session.create_or_update_window_handles!(session, window_handles)
+    path = "/session/" <> session.id <> "/window/handles"
+
+    path
+    |> get!()
+    |> case do
+      window_handles ->
+        Session.create_or_update_window_handles!(session, window_handles)
     end
   end
 
   def post_new_window!(session) do
-    with _ <- post!("/session/" <> session.id <> "/window/new") do
-      session
+    path = "/session/" <> session.id <> "/window/new"
+
+    path
+    |> post!()
+    |> case do
+      window ->
+        Session.create_or_update_window!(session, window)
     end
   end
 
   def post_frame!(session, id) do
-    with attrs <- %{id: id},
-         nil <- post!("/session/" <> session.id <> "/frame", attrs) do
-      session
+    path = "/session/" <> session.id <> "/frame"
+    attrs = %{id: id}
+
+    path
+    |> post!(attrs)
+    |> case do
+      nil ->
+        session
     end
   end
 
   def post_parent_frame!(session) do
-    with nil <- post!("/session/" <> session.id <> "/frame/parent") do
-      session
+    path = "/session/" <> session.id <> "/frame/parent"
+
+    path
+    |> post!()
+    |> case do
+      nil ->
+        session
     end
   end
 
   def get_window_rect!(session) do
-    with window_rect_attrs <- get!("/session/" <> session.id <> "/window/rect") do
-      Session.create_or_update_window_rect!(session, window_rect_attrs)
+    path = "/session/" <> session.id <> "/window/rect"
+
+    path
+    |> get!()
+    |> case do
+      attrs ->
+        Session.create_or_update_window_rect!(session, attrs)
     end
   end
 
   def post_window_rect!(session, attrs) do
-    with window_rect_attrs <- WindowRect.create_or_update!(session.window_rect, attrs),
-         window_rect_attrs <- post!("/session/" <> session.id <> "/window/rect", attrs) do
-      Session.create_or_update_window_rect!(session, window_rect_attrs)
+    path = "/session/" <> session.id <> "/window/rect"
+    attrs = WindowRect.create_or_update(session.window_rect, attrs)
+
+    path
+    |> post!(attrs)
+    |> case do
+      attrs ->
+        Session.create_or_update_window_rect!(session, attrs)
     end
   end
 
   def post_window_maximize!(session) do
-    with window_rect_attrs <- post!("/session/" <> session.id <> "/window/maximize") do
-      Session.create_or_update_window_rect!(session, window_rect_attrs)
+    path = "/session/" <> session.id <> "/window/maximize"
+
+    path
+    |> post!()
+    |> case do
+      attrs ->
+        Session.create_or_update_window_rect!(session, attrs)
     end
   end
 
   def post_window_minimize!(session) do
-    with window_rect_attrs <- post!("/session/" <> session.id <> "/window/minimize") do
-      Session.create_or_update_window_rect!(session, window_rect_attrs)
+    path = "/session/" <> session.id <> "/window/minimize"
+
+    path
+    |> post!()
+    |> case do
+      attrs ->
+        Session.create_or_update_window_rect!(session, attrs)
+    end
+  end
+
+  def post_window_fullscreen!(session) do
+    path = "/session/" <> session.id <> "/window/minimize"
+
+    path
+    |> post!()
+    |> case do
+      attrs ->
+        Session.create_or_update_window_rect!(session, attrs)
     end
   end
 
   def post_element!(session, using, value) do
-    with attrs <- %{using: using, value: value},
-         element <- post!("/session/" <> session.id <> "/element", attrs) do
-      Session.create_or_update_element!(session, element)
+    path = "/session/" <> session.id <> "/element"
+    attrs = %{using: using, value: value}
+
+    path
+    |> post!(attrs)
+    |> case do
+      element ->
+        Session.create_or_update_element!(session, element)
     end
   end
 
