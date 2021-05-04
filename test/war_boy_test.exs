@@ -327,14 +327,22 @@ defmodule WarBoyTest do
       assert match?(%Session{}, session)
     end
 
-    @tag :skip
-    test "GET /session/:id/element/active"
+    @tag url: "http://localhost:21584/parents/1"
+    test "GET /session/:id/element/active", %{session: session, url: url} do
+      session = WarBoy.post_url!(session, url)
+      session = WarBoy.get_element_active!(session)
+      assert match?(%Session{}, session)
+      assert is_map(session.element)
+    end
 
     @tag parent_url: "http://localhost:21584/parents/1"
     test "POST /session/:id/element", %{session: session, parent_url: parent_url} do
       session = WarBoy.post_url!(session, parent_url)
+      session = WarBoy.get_element_active!(session)
+      element = session.element
       session = WarBoy.post_element!(session, "css selector", "#child")
       assert match?(%Session{}, session)
+      assert element != session.element
       assert is_map(session.element)
     end
   end

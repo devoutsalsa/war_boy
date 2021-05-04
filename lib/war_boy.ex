@@ -256,6 +256,17 @@ defmodule WarBoy do
     end
   end
 
+  def get_element_active!(session) do
+    path = "/session/" <> session.id <> "/element/active"
+
+    path
+    |> get!()
+    |> case do
+      element ->
+        Session.create_or_update_element!(session, element)
+    end
+  end
+
   def post_element!(session, using, value) do
     path = "/session/" <> session.id <> "/element"
     attrs = %{using: using, value: value}
