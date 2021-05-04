@@ -141,6 +141,12 @@ defmodule WarBoy do
     end
   end
 
+  def post_window_minimize!(session) do
+    with window_rect_attrs <- post!("/session/" <> session.id <> "/window/minimize") do
+      Session.create_or_update_window_rect!(session, window_rect_attrs)
+    end
+  end
+
   def post_element!(session, using, value) do
     with attrs <- %{using: using, value: value},
          element <- post!("/session/" <> session.id <> "/element", attrs) do
