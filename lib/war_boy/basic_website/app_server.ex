@@ -14,6 +14,10 @@ defmodule WarBoy.BasicWebsite.AppServer do
     send_resp(conn, 200, template)
   end
 
+  get "/lists/1" do
+    send_resp(conn, 200, list_template())
+  end
+
   get "/favicon.ico" do
     send_resp(conn, 200, @favicon)
   end
@@ -93,6 +97,29 @@ defmodule WarBoy.BasicWebsite.AppServer do
         <div>
           <iframe id="child" src="#{child_url}">
         </div>
+      </body>
+    </html>
+    """
+  end
+
+  defp list_template() do
+    """
+    <!doctype html>
+    <html>
+      <head>
+        <title>
+          BasicWebsite: List 1
+        </title>
+      </head>
+      <body>
+        <h1>
+          List 1
+        </h1>
+        <ul class="list">
+          <li class="list-item">List item 1</li>
+          <li class="list-item">List item 2</li>
+          <li class="list-item">List item 3</li>
+        </ul>
       </body>
     </html>
     """

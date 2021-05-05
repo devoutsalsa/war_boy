@@ -255,7 +255,7 @@ defmodule WarBoyTest do
     test "POST /session/:id/frame", %{session: session, url: url} do
       session = WarBoy.post_url!(session, url)
       session = WarBoy.post_element!(session, "css selector", "#child")
-      session = WarBoy.post_frame!(session, session.element)
+      session = WarBoy.post_frame!(session, hd(session.elements))
       assert match?(%Session{}, session)
     end
 
@@ -263,7 +263,7 @@ defmodule WarBoyTest do
     test "POST /session/:id/frame/parent", %{session: session, url: url} do
       session = WarBoy.post_url!(session, url)
       session = WarBoy.post_element!(session, "css selector", "#child")
-      session = WarBoy.post_frame!(session, session.element)
+      session = WarBoy.post_frame!(session, hd(session.elements))
       session = WarBoy.post_frame_parent!(session)
       assert match?(%Session{}, session)
     end
@@ -336,18 +336,20 @@ defmodule WarBoyTest do
       session = WarBoy.post_url!(session, url)
       session = WarBoy.get_element_active!(session)
       assert match?(%Session{}, session)
-      assert is_map(session.element)
+      assert is_list(session.elements)
+      assert session.elements |> hd() |> is_map()
     end
 
     @tag parent_url: "http://localhost:21584/parents/1"
     test "POST /session/:id/element", %{session: session, parent_url: parent_url} do
       session = WarBoy.post_url!(session, parent_url)
       session = WarBoy.get_element_active!(session)
-      element = session.element
+      [element] = session.elements
       session = WarBoy.post_element!(session, "css selector", "#child")
       assert match?(%Session{}, session)
-      assert element != session.element
-      assert is_map(session.element)
+      assert [element] != session.elements
+      assert is_list(session.elements)
+      assert session.elements |> hd() |> is_map()
     end
 
     @tag parent_url: "http://localhost:21584/parents/1"
@@ -357,11 +359,24 @@ defmodule WarBoyTest do
     } do
       session = WarBoy.post_url!(session, parent_url)
       session = WarBoy.get_element_active!(session)
-      element = session.element
+      [element] = session.elements
       session = WarBoy.post_element_element!(session, element, "css selector", "#child")
       assert match?(%Session{}, session)
-      assert element != session.element
-      assert is_map(session.element)
+      assert [element] != session.elements
+      assert is_list(session.elements)
+      assert session.elements |> hd() |> is_map()
+    end
+
+    @tag url: "http://localhost:21584/lists/1"
+    test "POST /session/:session_id/element/:element_id/elements", %{session: session, url: url} do
+      session = WarBoy.post_url!(session, url)
+      session = WarBoy.post_element!(session, "css selector", ".list")
+      [element] = session.elements
+      session = WarBoy.post_element_elements!(session, element, "css selector", ".list-item")
+      assert match?(%Session{}, session)
+      assert [element] != session.elements
+      assert is_list(session.elements)
+      assert session.elements |> hd() |> is_map()
     end
   end
 

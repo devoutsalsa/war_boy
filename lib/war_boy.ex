@@ -263,7 +263,7 @@ defmodule WarBoy do
     |> get!()
     |> case do
       element ->
-        Session.create_or_update_element!(session, element)
+        Session.create_or_update_elements!(session, [element])
     end
   end
 
@@ -275,7 +275,7 @@ defmodule WarBoy do
     |> post!(attrs)
     |> case do
       element ->
-        Session.create_or_update_element!(session, element)
+        Session.create_or_update_elements!(session, [element])
     end
   end
 
@@ -289,7 +289,20 @@ defmodule WarBoy do
     |> post!(attrs)
     |> case do
       element ->
-        Session.create_or_update_element!(session, element)
+        Session.create_or_update_elements!(session, [element])
+    end
+  end
+
+  def post_element_elements!(session, element, using, value) when is_map(element) do
+    [element_id] = Map.values(element)
+    path = "/session/" <> session.id <> "/element/" <> element_id <> "/elements"
+    attrs = %{using: using, value: value}
+
+    path
+    |> post!(attrs)
+    |> case do
+      elements ->
+        Session.create_or_update_elements!(session, elements)
     end
   end
 

@@ -12,7 +12,7 @@ defmodule WarBoy.Session do
             title: nil,
             window: nil,
             window_handles: nil,
-            element: nil,
+            elements: nil,
             window_rect: nil
 
   def new!(attrs) do
@@ -50,8 +50,8 @@ defmodule WarBoy.Session do
     struct!(session, window_handles: window_handles)
   end
 
-  def create_or_update_element!(session, element) do
-    struct!(session, element: element)
+  def create_or_update_elements!(session, elements) do
+    struct!(session, elements: elements)
   end
 
   def create_or_update_window_rect!(session, window_rect_attrs) do
