@@ -326,6 +326,10 @@ defmodule WarBoyTest do
       session = WarBoy.post_window_fullscreen!(session)
       assert match?(%Session{}, session)
     end
+  end
+
+  describe "elements" do
+    setup(:session_setup_and_teardown)
 
     @tag url: "http://localhost:21584/parents/1"
     test "GET /session/:id/element/active", %{session: session, url: url} do
@@ -341,6 +345,20 @@ defmodule WarBoyTest do
       session = WarBoy.get_element_active!(session)
       element = session.element
       session = WarBoy.post_element!(session, "css selector", "#child")
+      assert match?(%Session{}, session)
+      assert element != session.element
+      assert is_map(session.element)
+    end
+
+    @tag parent_url: "http://localhost:21584/parents/1"
+    test "POST /session/:session_id/element/:element_id/element", %{
+      session: session,
+      parent_url: parent_url
+    } do
+      session = WarBoy.post_url!(session, parent_url)
+      session = WarBoy.get_element_active!(session)
+      element = session.element
+      session = WarBoy.post_element_element!(session, element, "css selector", "#child")
       assert match?(%Session{}, session)
       assert element != session.element
       assert is_map(session.element)

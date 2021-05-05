@@ -279,6 +279,20 @@ defmodule WarBoy do
     end
   end
 
+  def post_element_element!(session, element, using, value) when is_map(element) do
+    # A special shout out to @jonathan-lipps for helping w/ the element_id => https://stackoverflow.com/a/67393660/734750
+    [element_id] = Map.values(element)
+    path = "/session/" <> session.id <> "/element/" <> element_id <> "/element"
+    attrs = %{using: using, value: value}
+
+    path
+    |> post!(attrs)
+    |> case do
+      element ->
+        Session.create_or_update_element!(session, element)
+    end
+  end
+
   @doc false
   def __chrome_driver_scheme__() do
     Application.get_env(:war_boy, :chrome_driver_scheme, __chrome_driver_scheme_default__())
